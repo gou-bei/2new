@@ -7,4 +7,4 @@ RUN pip install requests \
 	&& pip install flask
 EXPOSE 5000
 ENV FLASK_RUN_HOST 127.0.0.1
-CMD ["python3","test.py"]
+CMD ["python3","app.py"]
