@@ -1,0 +1,57 @@
+version: '3.8'
+services: 
+    db: 
+        build: ./mariadb
+        privileged: true
+        ports: 
+        - 3306:3306
+        volumes: 
+        - ./mariadb/data/:/var/lib/mysql/
+        restart: unless-stopped
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "3m"
+                max-file: "1"
+    py: 
+        build: ./python
+        depends_on:
+        - db
+        restart: unless-stopped
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "3m"
+                max-file: "1"
+    web:
+        build: ./flask
+        ports:
+        - 5000:5000
+        depends_on:
+        - db
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://127.0.0.1:5000 || exit 1"]
+            interval: 10s
+            timeout: 10s
+            retries: 3
+            start_period: 5s
+        restart: unless-stopped
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "3m"
+                max-file: "1"
+    ssl:
+        build: ./nginx
+        ports:
+        - 80:80
+        - 443:443
+        depends_on:
+            web: 
+                condition: service_healthy
+        restart: unless-stopped
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "3m"
+                max-file: "1"
