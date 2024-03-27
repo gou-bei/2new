@@ -1,0 +1,4 @@
+FROM mariadb:latest
+ENV MYSQL_ROOT_PASSWORD=78gxtw23.ysq
+ENV LANG=C.UTF-8
+COPY init.sql /docker-entrypoint-initdb.d/

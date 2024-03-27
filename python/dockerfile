@@ -1,0 +1,7 @@
+FROM python:3.10.12
+WORKDIR /python
+COPY test.py test.py
+RUN pip install requests \
+	&& pip install pymysql \
+	&& pip install beautifulsoup4
+CMD ["python3","test.py"]
